@@ -1850,7 +1850,7 @@ for file in upload_queue:
                     description.write(line)
 
                 # Finally append the entire thing with some shameless self promotion ;) & and the closing [/center] tags and some line breaks
-                description.write(f'{bbcode_line_break}{bbcode_line_break} Uploaded with [color=red]{"<3" if str(tracker).upper() == "BHD" else "❤"}[/color] using [url=https://github.com/ryelogheat/xpbot]XpBot[/url][/center]')
+                description.write(f'{bbcode_line_break}{bbcode_line_break} Uploaded with [color=red]<3[/color] using [url=https://github.com/ryelogheat/xpbot]XpBot[/url][/center]')
 
             # Add the finished file to the 'torrent_info' dict
             torrent_info["description"] = f'{working_folder}/temp_upload/description.txt'
