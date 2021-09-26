@@ -1518,7 +1518,7 @@ def upload_to_site(upload_to, tracker_api_key):
         # Auto Download Torrent File
         torr_resp = requests.get(response.json()['data'].replace('\\/', '/'))
         if torr_resp.status_code == 200:
-            content_disp = response.headers['content-disposition']
+            content_disp = torr_resp.headers['content-disposition']
             file_name = re.findall('filename=\"(.+)\"', content_disp)[0]
             download_dir = '.'  # Change this path to download it to separate directory like a watch directory
             with open(os.path.join(download_dir, file_name), 'wb') as fp:
