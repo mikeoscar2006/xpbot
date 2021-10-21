@@ -703,7 +703,7 @@ def analyze_video_file(missing_value):
                                                r'(?P<VC1>VC(-1|1))', torrent_info["raw_file_name"], re.IGNORECASE)
 
         if filename_video_codec_regex is not None:
-            rename_codec = {'VC1': 'VC-1', 'MPEG2': 'MPEG-2', 'H264': 'H.264', 'H265': 'H.265'}
+            rename_codec = {'VC1': 'VC-1', 'MPEG2': 'MPEG-2', 'H.264': 'H264', 'H.265': 'H265'}
 
             for video_codec in ["HEVC", "AVC", "H265", "H264", "x265", "x264", "MPEG2", "VC1"]:
                 if filename_video_codec_regex.group(video_codec) is not None:
@@ -726,7 +726,7 @@ def analyze_video_file(missing_value):
             # Possible video_codecs now are either H.265 or HEVC
             # If the source is WEB I think we should use H.265 & leave HEVC for bluray discs/remuxs (encodes would fall under x265)
             elif "source" in torrent_info and torrent_info["source"] == "Web":
-                pymediainfo_video_codec = 'H.265'
+                pymediainfo_video_codec = 'H265'
             # for everything else we can just default to 'HEVC' since it'll technically be accurate no matter what
             else:
                 pymediainfo_video_codec = 'HEVC'
@@ -738,7 +738,7 @@ def analyze_video_file(missing_value):
             # Possible video_codecs now are either H.264 or AVC
             # If the source is WEB we should use H.264 & leave AVC for bluray discs/remuxs (encodes would fall under x265)
             elif "source" in torrent_info and torrent_info["source"] == "Web":
-                pymediainfo_video_codec = 'H.264'
+                pymediainfo_video_codec = 'H264'
             # for everything else we can just default to 'AVC' since it'll technically be accurate no matter what
             else:
                 pymediainfo_video_codec = 'AVC'
