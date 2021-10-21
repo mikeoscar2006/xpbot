@@ -123,6 +123,9 @@ parser.add_argument('-featured', action='store_true', help="(Internal) feature a
 parser.add_argument('-doubleup', action='store_true', help="(Internal) Give a new upload 'double up' status", default=argparse.SUPPRESS)
 parser.add_argument('-sticky', action='store_true', help="(Internal) Pin the new upload", default=argparse.SUPPRESS)
 
+# Extra args
+parser.add_argument('-um', '--use-mktorrent', action='store_true', help="Use mktorrent instead of torf (Latest git version only)", default=argparse.SUPPRESS)
+
 args = parser.parse_args()
 
 
@@ -1203,32 +1206,35 @@ def print_progress_bar(iteration, total, prefix='', suffix='', decimals=1, lengt
 def generate_dot_torrent(media, announce, source, callback=None):
     logging.info("Creating the .torrent file now")
     logging.info("announce url: {}".format(announce[0]))
-    if len(glob.glob(working_folder + "/temp_upload/*.torrent")) == 0:
-        logging.info("Existing .torrent file does not exist so we need to generate a new one")
-        # we need to actually generate a torrent file "from scratch"
-        torrent = Torrent(media,
-                          trackers=announce,
-                          source=source,
-                          private=True,
-                          )
-
-        torrent.generate(callback=callback)
-        torrent.write(f'{working_folder}/temp_upload/{tracker}-{torrent_info["torrent_title"]}.torrent')
-        # Save the path to .torrent file in torrent_settings
-        torrent_info["dot_torrent"] = f'{working_folder}/temp_upload/{torrent_info["torrent_title"]}.torrent'
-        logging.info("Trying to write into {}".format("[" + source + "]" + torrent_info["torrent_title"] + ".torrent"))
-
+    if args.use_mktorrent:
+        os.system(f"mktorrent -v -l 22 -e *.txt,*.jpg,*.png,*.nfo,*.svf,*.rar,*.screens -a '{announce}' -p -o \"{working_folder}/temp_upload/{tracker}-{torrent_info['torrent_title']}.torrent\" \"{media}\"")
     else:
-        print("Editing previous .torrent file to work with {} instead of generating a new one".format(source))
-        logging.info("Editing previous .torrent file to work with {} instead of generating a new one".format(source))
+        if len(glob.glob(working_folder + "/temp_upload/*.torrent")) == 0:
+            logging.info("Existing .torrent file does not exist so we need to generate a new one")
+            # we need to actually generate a torrent file "from scratch"
+            torrent = Torrent(media,
+                            trackers=announce,
+                            source=source,
+                            private=True,
+                            )
 
-        edit_torrent = Torrent.read(glob.glob(working_folder + '/temp_upload/*.torrent')[0])  # just choose whichever, doesn't really matter since we replace the same info anyways
+            torrent.generate(callback=callback)
+            torrent.write(f'{working_folder}/temp_upload/{tracker}-{torrent_info["torrent_title"]}.torrent')
+            # Save the path to .torrent file in torrent_settings
+            torrent_info["dot_torrent"] = f'{working_folder}/temp_upload/{torrent_info["torrent_title"]}.torrent'
+            logging.info("Trying to write into {}".format("[" + source + "]" + torrent_info["torrent_title"] + ".torrent"))
 
-        edit_torrent.metainfo['announce'] = announce[0]
-        edit_torrent.metainfo['info']['source'] = source
-        edit_torrent.metainfo['comment'] = ""
-        # Edit the previous .torrent and save it as a new copy
-        Torrent.copy(edit_torrent).write(f'{working_folder}/temp_upload/{tracker}-{torrent_info["torrent_title"]}.torrent')
+        else:
+            print("Editing previous .torrent file to work with {} instead of generating a new one".format(source))
+            logging.info("Editing previous .torrent file to work with {} instead of generating a new one".format(source))
+
+            edit_torrent = Torrent.read(glob.glob(working_folder + '/temp_upload/*.torrent')[0])  # just choose whichever, doesn't really matter since we replace the same info anyways
+
+            edit_torrent.metainfo['announce'] = announce[0]
+            edit_torrent.metainfo['info']['source'] = source
+            edit_torrent.metainfo['comment'] = ""
+            # Edit the previous .torrent and save it as a new copy
+            Torrent.copy(edit_torrent).write(f'{working_folder}/temp_upload/{tracker}-{torrent_info["torrent_title"]}.torrent')
 
     if os.path.isfile(f'{working_folder}/temp_upload/{tracker}-{torrent_info["torrent_title"]}.torrent'):
         logging.info(f'Successfully created the following file: {working_folder}/temp_upload/{tracker}-{torrent_info["torrent_title"]}.torrent')
