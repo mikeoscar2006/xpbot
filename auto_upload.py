@@ -146,7 +146,7 @@ def delete_leftover_files():
 
 def identify_type_and_basic_info(full_path):
     console.line(count=2)
-    console.rule(f"Analyzing & Identifying Video", style='red', align='center')
+    console.rule("Analyzing & Identifying Video", style='red', align='center')
     console.line(count=1)
 
     # guessit is typically pretty good at getting the title, year, resolution, group extracted
@@ -287,7 +287,6 @@ def identify_type_and_basic_info(full_path):
             # print(largest_playlist)
             torrent_info["largest_playlist"] = largest_playlist
 
-
         else:
             for individual_file in sorted(glob.glob(f"{torrent_info['upload_media']}/*")):
                 found = False  # this is used to break out of the double nested loop
@@ -337,7 +336,6 @@ def identify_type_and_basic_info(full_path):
     for missing_val in keys_we_need_but_missing_torrent_info:
         # Save the analyze_video_file() return result into the 'torrent_info' dict
         torrent_info[missing_val] = analyze_video_file(missing_value=missing_val)
-
 
     # Show the user what we identified so far
     columns_we_want = {
@@ -408,7 +406,6 @@ def analyze_video_file(missing_value):
             # now save the mediainfo txt file location to the dict
             # torrent_info["mediainfo"] = save_location
             return save_location
-
 
         else:
             # Get the BDInfo, parse & save it all into a file called mediainfo.txt (filename doesn't really matter, it gets uploaded to the same place anyways)
@@ -644,7 +641,7 @@ def analyze_video_file(missing_value):
 
             if "FLAC" in audio_codec:
                 # This is similar to the AAC situation right above ^^, on a recent upload I got the value "A_FLAC" which can be shortened to 'FLAC'
-                logging.info(f'Used pymediainfo to identify the audio codec: FLAC')
+                logging.info('Used pymediainfo to identify the audio codec: FLAC')
                 return "FLAC"
 
             if "DTS" in audio_codec:
@@ -802,7 +799,6 @@ def identify_miscellaneous_details():
                 # Right now only HDTV doesn't have any 'specific' variation so this will only run if HDTV is the source
                 torrent_info["source_type"] = f'{torrent_info["source"]}'
 
-
         # Well this sucks, we got pretty far this time but since 'auto_mode=true' we can't prompt the user & it probably isn't a great idea to start making assumptions about a media files source,
         # that seems like a good way to get a warning/ban so instead we'll just quit here and let the user know why
         else:
@@ -920,7 +916,7 @@ def identify_miscellaneous_details():
 
 def search_tmdb_for_id(query_title, year, content_type):
     console.line(count=2)
-    console.rule(f"TMDB Search Results", style='red', align='center')
+    console.rule("TMDB Search Results", style='red', align='center')
     console.line(count=1)
     if content_type == "episode":  # translation for TMDB API
         content_type = "tv"
@@ -1213,10 +1209,10 @@ def generate_dot_torrent(media, announce, source, callback=None):
             logging.info("Existing .torrent file does not exist so we need to generate a new one")
             # we need to actually generate a torrent file "from scratch"
             torrent = Torrent(media,
-                            trackers=announce,
-                            source=source,
-                            private=True,
-                            )
+                              trackers=announce,
+                              source=source,
+                              private=True,
+                              )
 
             torrent.generate(callback=callback)
             torrent.write(f'{working_folder}/temp_upload/{tracker}-{torrent_info["torrent_title"]}.torrent')
@@ -1336,8 +1332,6 @@ def choose_right_tracker_keys():
                     # Make sure you select the right .torrent file
                     if translation_key == "dot_torrent":
                         tracker_settings[config["translation"]["dot_torrent"]] = f'{working_folder}/temp_upload/{tracker}-{torrent_info["torrent_title"]}.torrent'
-
-
 
                 # The reason why we keep this elif statement here is because the conditional right above is also technically a "string"
                 # but its easier to keep mediainfo and description in text files until we need them so we have that small exception for them
@@ -1619,7 +1613,7 @@ for tracker in args.trackers:
                 raise AssertionError("Provide at least 1 tracker we can upload to (e.g. BHD, BLU, ACM)")
             if str(tracker).upper() not in upload_to_trackers:
                 upload_to_trackers.append(str(tracker).upper())
-        except AssertionError as err:
+        except AssertionError:
             logging.error("We can't upload to '{}' because that sites API key is not specified".format(tracker))
     else:
         logging.error("We can't upload to '{}' because that site is not supported".format(tracker))
@@ -1727,7 +1721,6 @@ for file in upload_queue:
 
                 # Overwrite the value for 'upload_media' with the path to the video file we just extracted
                 torrent_info["upload_media"] = latest_file
-
 
             # If the user doesn't have unrar installed then we let them know here and move on to the next file (if exists)
             else:
