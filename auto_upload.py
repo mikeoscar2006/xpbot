@@ -126,6 +126,7 @@ parser.add_argument('-sticky', action='store_true', help="(Internal) Pin the new
 # Extra args
 parser.add_argument('-um', '--use-mktorrent', action='store_true', help="Use mktorrent instead of torf (Latest git version only)", default=argparse.SUPPRESS)
 parser.add_argument('-asd', '--ad-save-dir', type=str, help="Save path for auto downloaded torrents", default='.')
+parser.add_argument('-ct', '--confirm-tracker', action='store_true', help="Confirm upload to tracker by default")
 
 args = parser.parse_args()
 
@@ -1642,7 +1643,7 @@ for tracker in upload_to_trackers:
 console.print(upload_to_trackers_overview)
 
 # If not in 'auto_mode' then verify with the user that they want to continue with the upload
-if auto_mode == "false":
+if auto_mode == "false" and not args.confirm_tracker:
     if not Confirm.ask("Continue upload to these sites?", default='y'):
         logging.info("User canceled upload when asked to confirm sites to upload to")
         sys.exit(console.print("\nOK, quitting now..\n", style="bold red", highlight=False))
