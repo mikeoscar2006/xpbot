@@ -127,6 +127,7 @@ parser.add_argument('-sticky', action='store_true', help="(Internal) Pin the new
 parser.add_argument('-um', '--use-mktorrent', action='store_true', help="Use mktorrent instead of torf (Latest git version only)", default=argparse.SUPPRESS)
 parser.add_argument('-asd', '--ad-save-dir', type=str, help="Save path for auto downloaded torrents", default='.')
 parser.add_argument('-ct', '--confirm-tracker', action='store_true', help="Confirm upload to tracker by default")
+parser.add_argument('-ar', '--addto-rtorrent', action='store_true', help="Add the downloaded torrent to rtorrent with correct base directory")
 
 args = parser.parse_args()
 
@@ -1525,6 +1526,13 @@ def upload_to_site(upload_to, tracker_api_key):
             download_path = os.path.join(args.ad_save_dir, file_name)  # Change this path to download it to separate directory like a watch directory
             with open(download_path, 'wb') as fp:
                 fp.write(torr_resp.content)
+
+        if args.addto_rtorrent and os.path.exists(download_path):
+            if os.path.isdir(torrent_info['upload_media']):
+                base_dir = torrent_info['upload_media']
+            else:
+                base_dir = os.path.abspath(os.path.join(torrent_info['upload_media'], os.pardir))
+            os.system(f'rtxmlrpc -q load.verbose "" "{download_path}" "d.directory_base.set=\"{base_dir}\""')
 
         # Update discord channel
         if discord_url:
