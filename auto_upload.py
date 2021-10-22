@@ -125,6 +125,7 @@ parser.add_argument('-sticky', action='store_true', help="(Internal) Pin the new
 
 # Extra args
 parser.add_argument('-um', '--use-mktorrent', action='store_true', help="Use mktorrent instead of torf (Latest git version only)", default=argparse.SUPPRESS)
+parser.add_argument('-asd', '--ad-save-dir', type=str, help="Save path for auto downloaded torrents", default='.')
 
 args = parser.parse_args()
 
@@ -1520,8 +1521,8 @@ def upload_to_site(upload_to, tracker_api_key):
         if torr_resp.status_code == 200:
             content_disp = torr_resp.headers['content-disposition']
             file_name = re.findall('filename=\"(.+)\"', content_disp)[0]
-            download_dir = '.'  # Change this path to download it to separate directory like a watch directory
-            with open(os.path.join(download_dir, file_name), 'wb') as fp:
+            download_path = os.path.join(args.ad_save_dir, file_name)  # Change this path to download it to separate directory like a watch directory
+            with open(download_path, 'wb') as fp:
                 fp.write(torr_resp.content)
 
         # Update discord channel
