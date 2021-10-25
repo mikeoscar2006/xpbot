@@ -1206,7 +1206,7 @@ def generate_dot_torrent(media, announce, source, callback=None):
     logging.info("Creating the .torrent file now")
     logging.info("announce url: {}".format(announce[0]))
     if args.use_mktorrent:
-        os.system(f"mktorrent -v -l 22 -e *.txt,*.jpg,*.png,*.nfo,*.svf,*.rar,*.screens -a '{announce}' -p -o \"{working_folder}/temp_upload/{tracker}-{torrent_info['torrent_title']}.torrent\" \"{media}\"")
+        os.system(f"mktorrent -v -l 22 -e *.txt,*.jpg,*.png,*.nfo,*.svf,*.rar,*.screens,*.sfv -a '{announce}' -p -o \"{working_folder}/temp_upload/{tracker}-{torrent_info['torrent_title']}.torrent\" \"{media}\"")
     else:
         if len(glob.glob(working_folder + "/temp_upload/*.torrent")) == 0:
             logging.info("Existing .torrent file does not exist so we need to generate a new one")
