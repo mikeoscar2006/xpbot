@@ -91,7 +91,10 @@ def search_for_dupes_api(search_site, imdb, torrent_info, tracker_api):
 
     # This just updates a dict with the number of a particular "type" of release exists on site (e.g. "2 bluray_encodes" or "1 bluray_remux" etc)
     for onsite_quality_type in existing_release_types.values():
-        existing_releases_count[onsite_quality_type] += 1
+        if onsite_quality_type in existing_releases_count:
+            existing_releases_count[onsite_quality_type] += 1
+        else:
+            existing_releases_count[onsite_quality_type] = 1
     logging.info(msg=f'Results from initial dupe query (all resolution): {existing_releases_count}')
 
 
